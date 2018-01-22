@@ -5,7 +5,6 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 public class ConnectionInfo {
 	
 	private int id;
-	private int userId;
 	private String name;
 	private String connectionType;
 	private String host;
@@ -14,7 +13,6 @@ public class ConnectionInfo {
 	private String username;
 	private String password;
 	private boolean isActive;
-	private String lastUpdated;
 	
 	
 	private JDBCInfo toJDBCInfo () throws Exception{
@@ -71,17 +69,6 @@ public class ConnectionInfo {
 	public void setId(int id) {
 		this.id = id;
 	}
-
-
-	public int getUserId() {
-		return userId;
-	}
-
-
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
-
 
 	public String getName() {
 		return name;
@@ -162,18 +149,5 @@ public class ConnectionInfo {
 		this.isActive = isActive;
 	}
 
-
-	public String getLastUpdated() {
-		return lastUpdated;
-	}
-
-
-	public void setLastUpdated(String lastUpdated) {
-		this.lastUpdated = lastUpdated;
-	}
-	
-	
-	
-	
 	
 }

@@ -1,5 +1,12 @@
 package com.execution.service.monitoring_execution_service.service;
 
-public class OfflineSchedulerService {
+import java.util.List;
+import java.util.Map;
 
+public class OfflineSchedulerService {
+	
+	
+	public void getTriggeredRulesInDetail(Map<Integer, List<Integer>> triggeredRulesSchedules){
+		
+	}
 }
