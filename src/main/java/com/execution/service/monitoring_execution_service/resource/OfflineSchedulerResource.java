@@ -6,21 +6,31 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
+
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.execution.service.monitoring_execution_service.service.OfflineSchedulerService;
+
+
+
 @Path("offline-scheduler/triggered")
 public class OfflineSchedulerResource {
+	
+	private OfflineSchedulerService offlineSchedulerService;
+	
+	public OfflineSchedulerResource(){
+		offlineSchedulerService = new OfflineSchedulerService();
+	}
+	
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response getTriggeredRulesAndSchedules(Map<Integer, List<Integer>> triggeredRulesSchedules){
-		
+	public Response getTriggeredRulesAndSchedules(Map<String, List<Integer>> triggeredRulesSchedules){
 		System.out.println(triggeredRulesSchedules);
+		offlineSchedulerService.getTriggeredRulesInDetail(triggeredRulesSchedules);
 		return Response.status(200).entity(true).build();
 	}
 	

@@ -1,5 +1,7 @@
 package com.execution.service.monitoring_execution_service.model;
 
+import java.sql.ResultSet;
+
 public class CheckInfo {
 	
 	private int id;
@@ -69,7 +71,12 @@ public class CheckInfo {
 	public void setCheckOperatorType(String checkOperatorType) {
 		this.checkOperatorType = checkOperatorType;
 	}
-	
+	/*
+	public boolean isTriggered(ResultSet rs){
+		//if(this.checkBenchmarkType)
+		//TODO implement this
+	}
+	*/
 	
 	
 }
