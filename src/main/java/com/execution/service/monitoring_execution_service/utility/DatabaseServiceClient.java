@@ -31,7 +31,7 @@ public class DatabaseServiceClient {
 	
 	public List<RuleInfo> getRuleInfoListFromDatabaseService(List<Integer> ruleIds) throws Exception{
 		String uri = generateGetUrl(ruleIds);
-		//System.out.println(uri);
+		System.out.println("uri: "+uri);
 		Client client = ClientBuilder.newClient();
 		return client.target(uri).request(MediaType.APPLICATION_JSON).get(new GenericType<List<RuleInfo>>(){});
 	}

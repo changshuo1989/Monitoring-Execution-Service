@@ -27,9 +27,18 @@ public class TypeAdapter<T> {
 		}
 		return null;
 	}
+	/*
+	public static boolean isSameType(String checkType, int sqlType){
+		if (checkType!= null && checkType.equalsIgnoreCase("Numeric")){
+			return Double.class;
+		}
+		else if (checkType!= null && checkType.equalsIgnoreCase("String")){
+			return String.class;
+		}
+		return null;
+	}
 	
-	
-
+*/
 
 	
 	public static Class<?> fromSqlTypeToJavaType(int sqlType){

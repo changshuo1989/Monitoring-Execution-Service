@@ -1,6 +1,5 @@
 package com.execution.service.monitoring_execution_service.model;
 
-import java.sql.ResultSet;
 
 public class CheckInfo {
 	
@@ -47,10 +46,10 @@ public class CheckInfo {
 	public void setAttributeName(String attributeName) {
 		this.attributeName = attributeName;
 	}
-	public boolean isActive() {
+	public boolean getIsActive() {
 		return isActive;
 	}
-	public void setActive(boolean isActive) {
+	public void setIsActive(boolean isActive) {
 		this.isActive = isActive;
 	}
 	public String getCheckConjunctionType() {
@@ -72,11 +71,115 @@ public class CheckInfo {
 		this.checkOperatorType = checkOperatorType;
 	}
 	/*
-	public boolean isTriggered(ResultSet rs){
-		//if(this.checkBenchmarkType)
-		//TODO implement this
+	 * 1 - trigger
+	 * 0 - waiting for the complete traverse(trigger)
+	 * -1 - not trigger
+	 * */
+	
+	public int isTriggered(String columnName, int sqlType, String value){
+		int res = -1;
+		System.out.println("attributeName: "+attributeName);
+		System.out.println("columnName: "+columnName);
+		System.out.println("check isActive: " + this.isActive);
+		System.out.println("this.checkOperatorType: "+this.checkOperatorType);
+		try{
+			if(this.attributeName.equalsIgnoreCase(columnName) && this.isActive){
+				if (this.checkBenchmarkType.equalsIgnoreCase("Numeric") && 
+						(this.checkOperatorType.equals("=") || this.checkOperatorType.equals(">") 
+						|| this.checkOperatorType.equals(">=") || this.checkOperatorType.equals("<") ||
+						this.checkOperatorType.equals("<="))){
+					
+					System.out.println("numeric!");
+					
+					double v = Double.parseDouble(value);
+					System.out.println("v:" +v);
+					double b = Double.parseDouble(this.benchmark);
+					System.out.println("b:" +b);
+					if(this.checkOperatorType.equals("=")){
+						if(v == b){
+							if(this.checkLogicType.equalsIgnoreCase("Is all of")){
+								res = 0;
+							}
+							else if(this.checkLogicType.equalsIgnoreCase("Is any of")){
+								res = 1;
+							}
+						}
+					}
+					else if(this.checkBenchmarkType.equals("!=")){
+						if(v != b){
+							if(this.checkLogicType.equalsIgnoreCase("Is all of")){
+								res = 0;
+							}
+							else if(this.checkLogicType.equalsIgnoreCase("Is any of")){
+								res = 1;
+							}
+						}
+					}
+					else if(this.checkBenchmarkType.equals(">")){
+						if(v > b){
+							if(this.checkLogicType.equalsIgnoreCase("Is all of")){
+								res = 0;
+							}
+							else if(this.checkLogicType.equalsIgnoreCase("Is any of")){
+								res = 1;
+							}
+						}
+					}
+					else if(this.checkBenchmarkType.equals(">=")){
+						if(v >= b){
+							if(this.checkLogicType.equalsIgnoreCase("Is all of")){
+								res = 0;
+							}
+							else if(this.checkLogicType.equalsIgnoreCase("Is any of")){
+								res = 1;
+							}
+						}
+					}
+					else if(this.checkBenchmarkType.equals("<")){
+						if(v < b){
+							if(this.checkLogicType.equalsIgnoreCase("Is all of")){
+								res = 0;
+							}
+							else if(this.checkLogicType.equalsIgnoreCase("Is any of")){
+								res = 1;
+							}
+						}
+					}
+					else if(this.checkBenchmarkType.equals("<=")){
+						if(v <= b){
+							if(this.checkLogicType.equalsIgnoreCase("Is all of")){
+								res = 0;
+							}
+							else if(this.checkLogicType.equalsIgnoreCase("Is any of")){
+								res = 1;
+							}
+						}
+					}
+				}
+				else if(this.checkBenchmarkType.equalsIgnoreCase("String") 
+						&& this.checkOperatorType.equalsIgnoreCase("CONTAINS")
+						&& this.isActive){
+					if(value.contains(this.benchmark)){
+						
+						if(this.checkLogicType.equalsIgnoreCase("Is all of")){
+							res = 0;
+						}
+						else if(this.checkLogicType.equalsIgnoreCase("Is any of")){
+							res = 1;
+						}
+					}
+				}
+				
+			}
+			
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
+		System.out.println("res:" +res);
+		return res;
 	}
-	*/
+	
 	
 	
 }
