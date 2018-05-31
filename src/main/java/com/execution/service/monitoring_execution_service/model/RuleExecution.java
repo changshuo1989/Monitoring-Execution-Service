@@ -33,6 +33,7 @@ public class RuleExecution implements Runnable{
 	public RuleInfo ruleInfo;
 	public ConnectionPoolMap connMap;
 	public int maxRow;
+	public int queryTimeout;
 	public String path;
 	
 	public RuleExecution(RuleInfo ri, ConnectionPoolMap connMap) {
@@ -40,11 +41,13 @@ public class RuleExecution implements Runnable{
 		this.connMap = connMap;
 		try{
 			this.maxRow = Integer.parseInt(PropertyReader.readProperty("max_row"));
+			this.queryTimeout = Integer.parseInt(PropertyReader.readProperty("queryTimeout"));
 			this.path = "reports/"+ri.getConnection().getName()+"/"+ri.getName()+"/";
 		}
 		catch(Exception e){
 			this.maxRow = 10000;
 			this.path = "reports/unknown/";
+			this.queryTimeout = 300;
 		}
 	}
 	
@@ -99,41 +102,6 @@ public class RuleExecution implements Runnable{
 		return blocks;
 	}
 	
-	//we assume the checks are already sorted! It has been handled by db service!
-	/*
-	private List<List<CheckInfo>> fromCheckListToCheckBlocks(List<CheckInfo> checks){
-		List<List<CheckInfo>> blocks = new ArrayList<List<CheckInfo>>();
-		List<CheckInfo> block = new ArrayList<>();
-		
-		if(checks != null && checks.size() != 0){
-			System.out.println("checks size: "+ checks.size());
-			for(int i=0; i<checks.size(); i++){
-				CheckInfo check = checks.get(i);
-				if(check.isActive() && i< checks.size()-1){
-					if(check.getCheckConjunctionType().equalsIgnoreCase("AND")){
-						if(block.isEmpty() ){
-							block.add(check);
-						}
-						else{
-							blocks.add(block);
-							block.clear();
-							block.add(check);
-						}
-					}
-					else if(check.getCheckConjunctionType().equalsIgnoreCase("OR")){
-						block.add(check);
-					}
-				}
-				else if(check.isActive() && i== checks.size()-1){
-					if(!block.isEmpty()){
-						blocks.add(block);
-					}
-				}
-			}
-		}
-		return blocks;
-	}
-	*/
 	
 	private boolean isTrigger(ResultSet rs, List<CheckInfo> checks, Map<Integer, Integer> typeMap){
 		if(checks == null || checks.size() == 0){
@@ -198,59 +166,10 @@ public class RuleExecution implements Runnable{
 		return res;
 	}
 	
-	
-	/*
-	private isTrigger(ResultSet rs, List<CheckInfo> checks, Map<Integer, Integer> typeMap){
-		if(checks == null || checks.size() == 0){
-			return false;
-		}
-		boolean res = false;
-		
-		List<List<CheckInfo>> blocks = fromCheckListToCheckBlocks(checks);
-		boolean[] blockWindow = new boolean[blocks.size()];
-		for(int i=0; i<blocks.size(); i++){
-			List<CheckInfo> block = blocks.get(i);
-			while(rs.next()){
-				for(Integer key: typeMap.keySet()){
-					String columnName = rs.getMetaData().getColumnName(key);
-					int[] window = new int[block.size()];
-					for(int j=0; j<block.size(); j++){
-						int isCheckTrigger = -1;
-						CheckInfo check = block.get(j);
-						if(check != null){
-							if(columnName.equalsIgnoreCase(check.getAttributeName())){
-								String value = TypeAdapter.fromResultSetToString(rs, key, typeMap.get(key));
-								isCheckTrigger = check.isTriggered(columnName, typeMap.get(key), value);
-							}
-						}
-						if(isCheckTrigger == 1){
-							blockWindow[i]=true;
-							break;
-						}
-						else if(isCheckTrigger == 0 ){
-							if(window[j] == 0 && rs.isLast()){
-								blockWindow[i]=true;
-								break;
-							}
-						}
-						else{
-							window[j] = -1;
-						}
-						
-					}
-
-				}
-
-			}
-			rs.beforeFirst();
-		}
-		
-	}
-	*/
-	
 	private RuleResult executeRule(Connection conn, String title, String sql, String ruleType, List<CheckInfo> checks) throws Exception{
 		//make resultset reusable
 		Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		stmt.setQueryTimeout(this.queryTimeout);
 		ResultSet rs = stmt.executeQuery(sql);
 		RuleResult rr = new RuleResult();
 		rr.name=title+"_"+DateTimeAdapter.fromDateTimeToTitleString(new Date())+".xlsx";
