@@ -28,7 +28,9 @@ public class EmailSender implements NotificationSender {
 
 	public EmailSender() throws Exception {
 		this.username = PropertyReader.readProperty("username");
-		this.password = PropertyReader.readProperty("password");
+		if(PropertyReader.readProperty("password") != null && !PropertyReader.readProperty("password").equals("") ){
+			this.password = PropertyReader.readProperty("password");
+		}
 		this.host = PropertyReader.readProperty("smtp_host");
 		this.port = PropertyReader.readProperty("smtp_port");
 		this.auth = PropertyReader.readProperty("smtp_auth");
@@ -40,19 +42,29 @@ public class EmailSender implements NotificationSender {
 	public boolean sendNotification(String target, String subject, String text, String fileName, String filePath){
 		
 		boolean res= false;
+		Properties props=System.getProperties();
+		Session session = null;
 		try{
-			Properties props = System.getProperties();
-			props.put("mail.smtp.host", host);
-			props.put("mail.smtp.port",port);
-			props.put("mail.smtp.starttls.enable",tlsEnable);
-			props.put("mail.smtp.auth",auth);
-			
-		      Session session = Session.getInstance(props,
+			if(this.password != null){
+				props.put("mail.smtp.host", host);
+				props.put("mail.smtp.port",port);
+				
+				props.put("mail.smtp.starttls.enable",tlsEnable);
+				props.put("mail.smtp.auth",auth);
+				
+				session = Session.getInstance(props,
 		    	         new javax.mail.Authenticator() {
 		    	            protected PasswordAuthentication getPasswordAuthentication() {
 		    	               return new PasswordAuthentication(username, password);
 		    	            }
 		      });
+			}
+			else{
+				props.put("mail.smtp.host", host);
+				props.put("mail.smtp.port",port);
+				session = Session.getInstance(props);
+			}
+			
 		      // Create a default MimeMessage object.
 		      Message message = new MimeMessage(session);
 		      // Set From: header field of the header.
