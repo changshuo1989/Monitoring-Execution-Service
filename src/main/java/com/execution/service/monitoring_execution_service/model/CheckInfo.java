@@ -82,6 +82,7 @@ public class CheckInfo {
 		System.out.println("columnName: "+columnName);
 		System.out.println("check isActive: " + this.isActive);
 		System.out.println("this.checkOperatorType: "+this.checkOperatorType);
+		System.out.println("check logic type:"+ this.getCheckLogicType());
 		try{
 			if(this.attributeName.equalsIgnoreCase(columnName) && this.isActive){
 				if (this.checkBenchmarkType.equalsIgnoreCase("Numeric") && 
@@ -89,12 +90,11 @@ public class CheckInfo {
 						|| this.checkOperatorType.equals(">=") || this.checkOperatorType.equals("<") ||
 						this.checkOperatorType.equals("<="))){
 					
-					System.out.println("numeric!");
-					
 					double v = Double.parseDouble(value);
 					System.out.println("v:" +v);
 					double b = Double.parseDouble(this.benchmark);
 					System.out.println("b:" +b);
+					
 					if(this.checkOperatorType.equals("=")){
 						if(v == b){
 							if(this.checkLogicType.equalsIgnoreCase("Is all of")){
@@ -125,7 +125,8 @@ public class CheckInfo {
 							}
 						}
 					}
-					else if(this.checkBenchmarkType.equals(">=")){
+					else if(this.checkBenchmarkType.equalsIgnoreCase(">=")){
+						System.out.println(">= here!");
 						if(v >= b){
 							if(this.checkLogicType.equalsIgnoreCase("Is all of")){
 								res = 0;

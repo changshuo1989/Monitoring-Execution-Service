@@ -60,31 +60,25 @@ public class RuleExecution implements Runnable{
 				boolean findNextAnd = false;
 				for(int j=i; j<checks.size(); j++){
 					CheckInfo check = checks.get(j);
-					System.out.println("check getCheckConjunctionType: "+check.getCheckConjunctionType());
-					System.out.println("check isActive: "+check.getIsActive());
 					if(check.getIsActive() 
 							&& check.getCheckConjunctionType().equalsIgnoreCase("AND") 
 							&& block.size() == 0){
-						System.out.println("11");
 						block.add(check);
 					}
 					else if(check.getIsActive() 
 							&& check.getCheckConjunctionType().equalsIgnoreCase("OR") &&
 							block.size() > 0){
-						System.out.println("22");
 						block.add(check);
 					}
 					else if(check.getIsActive()
 							&&check.getCheckConjunctionType().equalsIgnoreCase("AND") &&
 							block.size() >0 ){
-						System.out.println("33");
 						i = j;
 						findNextAnd = true;
 						break;
 					}	
 				}
 				
-				System.out.println("block size: "+ block.size());
 				if(findNextAnd){
 					if(block.size() > 0){
 						blocks.add(block);
