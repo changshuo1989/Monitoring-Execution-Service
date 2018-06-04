@@ -78,11 +78,11 @@ public class CheckInfo {
 	
 	public int isTriggered(String columnName, int sqlType, String value){
 		int res = -1;
-		System.out.println("attributeName: "+attributeName);
-		System.out.println("columnName: "+columnName);
-		System.out.println("check isActive: " + this.isActive);
-		System.out.println("this.checkOperatorType: "+this.checkOperatorType);
-		System.out.println("check logic type:"+ this.getCheckLogicType());
+		//System.out.println("attributeName: "+attributeName);
+		//System.out.println("columnName: "+columnName);
+		//System.out.println("check isActive: " + this.isActive);
+		//System.out.println("this.checkOperatorType: "+this.checkOperatorType);
+		//System.out.println("check logic type:"+ this.getCheckLogicType());
 		try{
 			if(this.attributeName.equalsIgnoreCase(columnName) && this.isActive){
 				if (this.checkBenchmarkType.equalsIgnoreCase("Numeric") && 
@@ -91,9 +91,9 @@ public class CheckInfo {
 						this.checkOperatorType.equals("<="))){
 					
 					double v = Double.parseDouble(value);
-					System.out.println("v:" +v);
+					//System.out.println("v:" +v);
 					double b = Double.parseDouble(this.benchmark);
-					System.out.println("b:" +b);
+					//System.out.println("b:" +b);
 					
 					if(this.checkOperatorType.equals("=")){
 						if(v == b){
@@ -105,7 +105,7 @@ public class CheckInfo {
 							}
 						}
 					}
-					else if(this.checkBenchmarkType.equals("!=")){
+					else if(this.checkOperatorType.equals("!=")){
 						if(v != b){
 							if(this.checkLogicType.equalsIgnoreCase("Is all of")){
 								res = 0;
@@ -115,7 +115,7 @@ public class CheckInfo {
 							}
 						}
 					}
-					else if(this.checkBenchmarkType.equals(">")){
+					else if(this.checkOperatorType.equals(">")){
 						if(v > b){
 							if(this.checkLogicType.equalsIgnoreCase("Is all of")){
 								res = 0;
@@ -125,8 +125,7 @@ public class CheckInfo {
 							}
 						}
 					}
-					else if(this.checkBenchmarkType.equalsIgnoreCase(">=")){
-						System.out.println(">= here!");
+					else if(this.checkOperatorType.equalsIgnoreCase(">=")){
 						if(v >= b){
 							if(this.checkLogicType.equalsIgnoreCase("Is all of")){
 								res = 0;
@@ -136,7 +135,7 @@ public class CheckInfo {
 							}
 						}
 					}
-					else if(this.checkBenchmarkType.equals("<")){
+					else if(this.checkOperatorType.equals("<")){
 						if(v < b){
 							if(this.checkLogicType.equalsIgnoreCase("Is all of")){
 								res = 0;
@@ -146,7 +145,7 @@ public class CheckInfo {
 							}
 						}
 					}
-					else if(this.checkBenchmarkType.equals("<=")){
+					else if(this.checkOperatorType.equals("<=")){
 						if(v <= b){
 							if(this.checkLogicType.equalsIgnoreCase("Is all of")){
 								res = 0;
@@ -177,7 +176,7 @@ public class CheckInfo {
 		catch(Exception e){
 			e.printStackTrace();
 		}
-		System.out.println("res:" +res);
+		//System.out.println("res:" +res);
 		return res;
 	}
 	
