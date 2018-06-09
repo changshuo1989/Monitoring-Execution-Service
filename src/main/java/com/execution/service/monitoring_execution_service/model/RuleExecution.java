@@ -9,6 +9,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.eclipse.jdt.internal.compiler.problem.ShouldNotImplement;
 
 import com.execution.service.monitoring_execution_service.utility.DateTimeAdapter;
 import com.execution.service.monitoring_execution_service.utility.EmailSender;
@@ -44,10 +46,58 @@ public class RuleExecution implements Runnable{
 			this.path = "reports/"+ri.getConnection().getName()+"/"+ri.getName()+"/";
 		}
 		catch(Exception e){
-			this.maxRow = 10000;
+			this.maxRow = 20000;
 			this.path = "reports/unknown/";
 			this.queryTimeout = 300;
 		}
+	}
+	
+	private List<List<Integer>> fromCheckListToCheckBlocks2(List<CheckInfo> checks, int[] isTriggerList){
+		
+		//List<List<CheckInfo>> blocks = new ArrayList<List<CheckInfo>>();
+		List<List<Integer>> blocks = new ArrayList<List<Integer>>();
+		
+		System.out.println("chceks size: "+checks.size());
+		if(checks != null && checks.size() != 0){
+			int i = 0;
+			while(i < checks.size()){
+				List<Integer> block = new ArrayList<>();
+				boolean findNextAnd = false;
+				for(int j=i; j<checks.size(); j++){
+					CheckInfo check = checks.get(j);
+					if(check.getIsActive() 
+							&& check.getCheckConjunctionType().equalsIgnoreCase("AND") 
+							&& block.size() == 0){
+						block.add(isTriggerList[j]);
+					}
+					else if(check.getIsActive() 
+							&& check.getCheckConjunctionType().equalsIgnoreCase("OR") &&
+							block.size() > 0){
+						block.add(isTriggerList[j]);
+					}
+					else if(check.getIsActive()
+							&&check.getCheckConjunctionType().equalsIgnoreCase("AND") &&
+							block.size() >0 ){
+						i = j;
+						findNextAnd = true;
+						break;
+					}	
+				}
+				
+				if(findNextAnd){
+					if(block.size() > 0){
+						blocks.add(block);
+					}
+				}
+				else{
+					if(block.size() > 0){
+						blocks.add(block);
+					}
+					i++;
+				}
+			}
+		}
+		return blocks;
 	}
 	
 	private List<List<CheckInfo>> fromCheckListToCheckBlocks(List<CheckInfo> checks){
@@ -95,6 +145,8 @@ public class RuleExecution implements Runnable{
 		return blocks;
 	}
 	
+	
+
 	
 	private boolean isTrigger(ResultSet rs, List<CheckInfo> checks, Map<Integer, Integer> typeMap){
 		if(checks == null || checks.size() == 0){
@@ -161,7 +213,7 @@ public class RuleExecution implements Runnable{
 	
 	private RuleResult executeRule(Connection conn, String title, String sql, String ruleType, List<CheckInfo> checks) throws Exception{
 		//make resultset reusable
-		Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		Statement stmt = conn.createStatement();
 		stmt.setQueryTimeout(this.queryTimeout);
 		ResultSet rs = stmt.executeQuery(sql);
 		RuleResult rr = new RuleResult();
@@ -174,48 +226,108 @@ public class RuleExecution implements Runnable{
 		//form header
 		ResultSetMetaData rsmd = rs.getMetaData();
 		XSSFRow headerRow = sheet.createRow(0);
-		Map<Integer, Integer> typeMap = new LinkedHashMap<>();
+		//Map<MetaData, Integer> typeMap = new LinkedHashMap<>();
+		//Map<MetaData, ArrayList<String>> resultSetMap = new LinkedHashMap<>();
+		List<MetaData> metaDataList = new ArrayList<>();
 		//CellStyle style = workbook.createCellStyle();
 	    //style.setFillForegroundColor(IndexedColors.BLUE.getIndex());
 	   
 		for (int i = 1; i <= rsmd.getColumnCount(); i++){
-			typeMap.put(i, rsmd.getColumnType(i));
+			//typeMap.put(i, rsmd.getColumnType(i));
 			String headerName=rsmd.getColumnName(i);
 			XSSFCell cell = headerRow.createCell(i-1);
 			cell.setCellValue(headerName);
+			MetaData data =new MetaData(i, headerName, rsmd.getColumnType(i));
+			metaDataList.add(data);
 			
 		}
+		
+		
 		//form content
 		int rowCount = 1;
 		
-		while (rs.next()) {
-			Set<Integer> keys = typeMap.keySet();
+		//checks
+		//List<List<CheckInfo>> blocks = fromCheckListToCheckBlocks(checks);
+		//boolean[] blocksWindow = new boolean[blocks.size()];
+		rr.shouldNotify = true;
+		int[] isTriggerList = null;
+		if(ruleType.equalsIgnoreCase("Alert") && checks != null && checks.size() != 0){
+			isTriggerList = new int[checks.size()];
+		}
+		
+		while (rs.next() && rowCount <= this.maxRow) {
 			XSSFRow bodyRow = sheet.createRow(rowCount);
 			int cellCount = 0;
-			for (Integer key : keys) {
+			for (MetaData data : metaDataList) {
 				XSSFCell cell = bodyRow.createCell(cellCount);
-				String value = TypeAdapter.fromResultSetToString(rs, key, typeMap.get(key));
+				//String value = TypeAdapter.fromResultSetToString(rs, key, typeMap.get(key));
+				String value = TypeAdapter.fromResultSetToString(rs, data.order, data.sqlType);
 				cell.setCellValue(value);
+				//ArrayList<String> valueList = resultSetMap.get(key);
+				//valueList.add(value);
 				cellCount++;
+				if(ruleType.equalsIgnoreCase("Alert")){
+					if(isTriggerList != null){
+						for(int i=0; i<checks.size(); i++){
+							CheckInfo check = checks.get(i);
+							if(check.getAttributeName().equalsIgnoreCase(data.name)){
+								int isCheckTrigger = check.isTriggered(data.name, data.sqlType, value);
+								if(isCheckTrigger == 1){
+									isTriggerList[i] = 1;
+								}
+								else if(isCheckTrigger == -1){
+									if(isTriggerList[i] != 1){
+										isTriggerList[i] = -1;
+									}
+								}
+							}
+						}
+					}
+				}	
 			}
 			rowCount++;
 		}
 		rr.excel=workbook;
 		
+		if(isTriggerList != null){
+			
+			List<List<Integer>> isTriggerBlocks = fromCheckListToCheckBlocks2(checks, isTriggerList);
+			if(isTriggerBlocks!=null && isTriggerBlocks.size() != 0){
+				for(List<Integer> isTriggerBlock : isTriggerBlocks){
+					boolean isBlockTrigger = false;
+					if(isTriggerBlock != null && isTriggerBlock.size() != 0){
+						for(int i=0; i<isTriggerBlock.size(); i++){
+							int isTrigger = isTriggerBlock.get(i);
+							//block trigger
+							if(isTrigger == 0 || isTrigger == 1){
+								isBlockTrigger = true;
+								break;
+							}
+						}
+						if(!isBlockTrigger){
+							rr.shouldNotify = false;
+							break;
+						}
+					}
+				}
+			}
+		}
 		
+		rs.close();
+		/*
 		if(ruleType.equalsIgnoreCase("Report")){
-			System.out.println("This is a report!");
+			System.out.println("This is a report");
 			rr.shouldNotify=true;
 
 		}
 		else if(ruleType.equalsIgnoreCase("Alert")){
-			System.out.println("This is a alert!");
+			System.out.println("This is a alert");
 			rs.beforeFirst();
-			if(isTrigger(rs, checks, typeMap)){
+			if(isTrigger(checks, resultSetMap)){
 				rr.shouldNotify=true;
 			}
 		}
-		
+		*/
 		return rr;
 	}
 	
