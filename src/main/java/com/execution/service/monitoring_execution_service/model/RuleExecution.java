@@ -248,11 +248,17 @@ public class RuleExecution implements Runnable{
 		//boolean[] blocksWindow = new boolean[blocks.size()];
 		rr.shouldNotify = true;
 		int[] isTriggerList = null;
-		if(ruleType.equalsIgnoreCase("Alert") && checks != null && checks.size() != 0){
-			isTriggerList = new int[checks.size()];
+		if(ruleType.equalsIgnoreCase("Alert")){
+			if(checks != null && checks.size() != 0){
+				isTriggerList = new int[checks.size()];
+			}
+			else{
+				rr.shouldNotify = false;
+			}
 		}
-		
+		boolean isResultSetEmpty=true;
 		while (rs.next()) {
+			isResultSetEmpty = false;
 			XSSFRow bodyRow = sheet.createRow(rowCount);
 			int cellCount = 0;
 			for (MetaData data : metaDataList) {
@@ -286,8 +292,7 @@ public class RuleExecution implements Runnable{
 		}
 		rr.excel=workbook;
 		
-		if(isTriggerList != null){
-			
+		if(isTriggerList != null && !isResultSetEmpty){
 			List<List<Integer>> isTriggerBlocks = fromCheckListToCheckBlocks2(checks, isTriggerList);
 			if(isTriggerBlocks!=null && isTriggerBlocks.size() != 0){
 				for(List<Integer> isTriggerBlock : isTriggerBlocks){
@@ -374,6 +379,7 @@ public class RuleExecution implements Runnable{
 					// get connection for connection pool
 					connection = connMap.getMap().get(connId).getConnection();
 					ruleResult = executeRule(connection, ruleName, ruleContent, ruleType, ruleChecks);
+					
 					if(ruleResult !=null && ruleResult.excel != null){
 						//generate directory if not exist
 						File dir=new File(this.path);
