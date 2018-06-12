@@ -211,6 +211,7 @@ public class RuleExecution implements Runnable{
 		//make resultset reusable
 		Statement stmt = conn.createStatement();
 		stmt.setQueryTimeout(this.queryTimeout);
+		stmt.setMaxRows(maxRow);
 		ResultSet rs = stmt.executeQuery(sql);
 		RuleResult rr = new RuleResult();
 		rr.name=title+"_"+DateTimeAdapter.fromDateTimeToTitleString(new Date())+".xlsx";
@@ -251,7 +252,7 @@ public class RuleExecution implements Runnable{
 			isTriggerList = new int[checks.size()];
 		}
 		
-		while (rs.next() && rowCount <= this.maxRow) {
+		while (rs.next()) {
 			XSSFRow bodyRow = sheet.createRow(rowCount);
 			int cellCount = 0;
 			for (MetaData data : metaDataList) {

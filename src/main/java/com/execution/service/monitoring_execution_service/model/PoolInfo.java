@@ -1,4 +1,4 @@
- 	package com.execution.service.monitoring_execution_service.model;
+package com.execution.service.monitoring_execution_service.model;
 
 import com.execution.service.monitoring_execution_service.utility.PropertyReader;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
@@ -8,6 +8,7 @@ public class PoolInfo {
 	private int acquireIncrement=2;
 	private int maxPoolSize=20;
 	private int maxIdleTime=240;
+	private int maxIdleTimeExcessConnections=540;
 	private boolean testConnectionOnCheckout=true;
 	private String preferredTestQuery = "select 1";
 	
@@ -27,13 +28,14 @@ public class PoolInfo {
 			String maxIdleTimeStr = PropertyReader.readProperty("maxIdleTime");
 			String testConnectionOnCheckout = PropertyReader.readProperty("TestConnectionOnCheckout");
 			String preferredTestQueryStr = PropertyReader.readProperty("PreferredTestQuery");
-			
+			String maxIdleTimeExcessConnectionsStr = PropertyReader.readProperty("maxIdleTimeExcessConnections");
 			this.minPoolSize = Integer.parseInt(minPoolSizeStr);
 			this.acquireIncrement = Integer.parseInt(acquireIncrementStr);
 			this.maxPoolSize = Integer.parseInt(maxPoolSizeStr);
 			this.maxIdleTime = Integer.parseInt(maxIdleTimeStr);
 			this.testConnectionOnCheckout = Boolean.parseBoolean(testConnectionOnCheckout);
 			this.preferredTestQuery = preferredTestQueryStr;
+			this.maxIdleTimeExcessConnections = Integer.parseInt(maxIdleTimeExcessConnectionsStr);
 					
 		}
 		catch(Exception e){
@@ -49,6 +51,7 @@ public class PoolInfo {
 		cpds.setMaxIdleTime(this.maxIdleTime);
 		cpds.setTestConnectionOnCheckout(this.testConnectionOnCheckout);
 		cpds.setPreferredTestQuery(this.preferredTestQuery);
+		cpds.setMaxIdleTimeExcessConnections(this.maxIdleTimeExcessConnections);
 	}
 
 	
@@ -98,6 +101,14 @@ public class PoolInfo {
 
 	public void setPreferredTestQuery(String preferredTestQuery) {
 		this.preferredTestQuery = preferredTestQuery;
+	}
+
+	public int getMaxIdleTimeExcessConnections() {
+		return maxIdleTimeExcessConnections;
+	}
+
+	public void setMaxIdleTimeExcessConnections(int maxIdleTimeExcessConnections) {
+		this.maxIdleTimeExcessConnections = maxIdleTimeExcessConnections;
 	}
 	
 	
