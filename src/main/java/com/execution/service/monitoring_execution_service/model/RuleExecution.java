@@ -252,9 +252,6 @@ public class RuleExecution implements Runnable{
 			if(checks != null && checks.size() != 0){
 				isTriggerList = new int[checks.size()];
 			}
-			else{
-				rr.shouldNotify = false;
-			}
 		}
 		boolean isResultSetEmpty=true;
 		while (rs.next()) {
@@ -313,6 +310,9 @@ public class RuleExecution implements Runnable{
 					}
 				}
 			}
+		}
+		else if(isResultSetEmpty && ruleType.equalsIgnoreCase("Alert")){
+			rr.shouldNotify = false;
 		}
 		
 		rs.close();
