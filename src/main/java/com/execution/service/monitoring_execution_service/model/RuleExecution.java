@@ -333,11 +333,11 @@ public class RuleExecution implements Runnable{
 		return rr;
 	}
 	
-	private void sendNotification(List<RecipientInfo> recipients,String ruleType, String fileName, String filePath) throws Exception{
+	private void sendNotification(List<RecipientInfo> recipients,String ruleType, String ruleName, String fileName, String filePath) throws Exception{
 		if(recipients == null || recipients.size()==0){
 			return;
 		}
-		String subject = "Your Subscribed "+ruleType;
+		String subject = "Your Subscribed "+ruleType+"-"+ruleName;
 		String text = "Hi User,\n\nAttached is the result of your suscribed "+ruleType+" for your review.\n\nBest,\nChangshuo Gao\n";
 		for(RecipientInfo recipient : recipients){
 			if(recipient.getRecipientType().equalsIgnoreCase("Email")){
@@ -394,7 +394,7 @@ public class RuleExecution implements Runnable{
 						
 						//send message to notification service
 						if(ruleResult.shouldNotify){
-							sendNotification(ruleRecipients, ruleType, ruleResult.name, fullFileName);
+							sendNotification(ruleRecipients, ruleType, ruleName, ruleResult.name, fullFileName);
 						}
 					}
 				}
