@@ -43,7 +43,7 @@ public class TypeAdapter<T> {
 	
 	public static Class<?> fromSqlTypeToJavaType(int sqlType){
 		//String
-		if(sqlType == Types.VARCHAR || sqlType == Types.CHAR || sqlType == Types.LONGNVARCHAR){
+		if(sqlType == Types.VARCHAR || sqlType == Types.CHAR || sqlType == Types.LONGNVARCHAR || sqlType == -1){
 			return String.class;
 		}
 		//Integer
@@ -94,7 +94,7 @@ public class TypeAdapter<T> {
 		}
 		
 		//String
-		if(sqlType == Types.VARCHAR || sqlType == Types.CHAR || sqlType == Types.LONGNVARCHAR){
+		if(sqlType == Types.VARCHAR || sqlType == Types.CHAR || sqlType == Types.LONGNVARCHAR || sqlType == -1){
 			return rs.getString(columnNumber);
 		}
 		//Integer
