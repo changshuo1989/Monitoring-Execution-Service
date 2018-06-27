@@ -10,6 +10,7 @@ public class RuleInfo {
 	private String ruleStatus;
 	private String ruleType;
 	private ConnectionInfo connection;
+	private boolean notifyWhenEmptyData;
 	private List<CheckInfo> checks;
 	private List<RecipientInfo> recipients;
 	
@@ -61,6 +62,12 @@ public class RuleInfo {
 	}
 	public void setRecipients(List<RecipientInfo> recipients) {
 		this.recipients = recipients;
+	}
+	public boolean getNotifyWhenEmptyData() {
+		return notifyWhenEmptyData;
+	}
+	public void setNotifyWhenEmptyData(boolean notifyWhenEmptyData) {
+		this.notifyWhenEmptyData = notifyWhenEmptyData;
 	}
 	
 	

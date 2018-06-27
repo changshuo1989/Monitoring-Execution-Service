@@ -207,7 +207,7 @@ public class RuleExecution implements Runnable{
 		return res;
 	}
 	
-	private RuleResult executeRule(Connection conn, String title, String sql, String ruleType, List<CheckInfo> checks) throws Exception{
+	private RuleResult executeRule(Connection conn, String title, String sql, String ruleType, boolean notifyWhenEmptyData, List<CheckInfo> checks) throws Exception{
 		//make resultset reusable
 		Statement stmt = conn.createStatement();
 		stmt.setQueryTimeout(this.queryTimeout);
@@ -311,7 +311,7 @@ public class RuleExecution implements Runnable{
 				}
 			}
 		}
-		else if(isResultSetEmpty && ruleType.equalsIgnoreCase("Alert")){
+		else if(isResultSetEmpty && !notifyWhenEmptyData){
 			rr.shouldNotify = false;
 		}
 		
@@ -370,6 +370,7 @@ public class RuleExecution implements Runnable{
 				String ruleContent = ruleInfo.getContent();
 				String ruleStatus = ruleInfo.getRuleStatus();
 				String ruleType = ruleInfo.getRuleType();
+				boolean notifyWhenEmptyData = ruleInfo.getNotifyWhenEmptyData();
 				List<CheckInfo> ruleChecks = ruleInfo.getChecks();
 				List<RecipientInfo> ruleRecipients = ruleInfo.getRecipients();
 				ConnectionInfo connInfo = ruleInfo.getConnection();
@@ -378,7 +379,7 @@ public class RuleExecution implements Runnable{
 					int connId = connInfo.getId();
 					// get connection for connection pool
 					connection = connMap.getMap().get(connId).getConnection();
-					ruleResult = executeRule(connection, ruleName, ruleContent, ruleType, ruleChecks);
+					ruleResult = executeRule(connection, ruleName, ruleContent, ruleType, notifyWhenEmptyData, ruleChecks);
 					
 					if(ruleResult !=null && ruleResult.excel != null){
 						//generate directory if not exist
