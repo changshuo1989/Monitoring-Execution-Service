@@ -78,10 +78,10 @@ public class CheckInfo {
 	
 	public int isTriggered(String columnName, int sqlType, String value){
 		int res = -1;
-		//System.out.println("attributeName: "+attributeName);
-		//System.out.println("columnName: "+columnName);
-		//System.out.println("check isActive: " + this.isActive);
-		//System.out.println("this.checkOperatorType: "+this.checkOperatorType);
+		System.out.println("attributeName: "+attributeName);
+		System.out.println("columnName: "+columnName);
+		System.out.println("check isActive: " + this.isActive);
+		System.out.println("this.checkOperatorType: "+this.checkOperatorType);
 		//System.out.println("check logic type:"+ this.getCheckLogicType());
 		try{
 			if(this.attributeName.equalsIgnoreCase(columnName) && this.isActive){
@@ -105,7 +105,10 @@ public class CheckInfo {
 							}
 						}
 					}
+					
 					else if(this.checkOperatorType.equals("!=")){
+						System.out.println("v: " +v);
+						System.out.println("b: " +b);
 						if(v != b){
 							if(this.checkLogicType.equalsIgnoreCase("Is all of")){
 								res = 0;
@@ -176,7 +179,7 @@ public class CheckInfo {
 		catch(Exception e){
 			e.printStackTrace();
 		}
-		//System.out.println("res:" +res);
+		System.out.println("res:" +res);
 		return res;
 	}
 	
