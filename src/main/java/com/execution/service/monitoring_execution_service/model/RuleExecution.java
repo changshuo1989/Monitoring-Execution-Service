@@ -338,7 +338,7 @@ public class RuleExecution implements Runnable{
 			return;
 		}
 		String subject = "Your Subscribed "+ruleType+"-"+ruleName;
-		String text = "Hi User,\n\nAttached is the result of your subscribed "+ruleType+" for your review.\n\nBest,\nChangshuo Gao\n";
+		String text = "Hi User,\n\nAttached is the result of your subscribed "+ruleType+" for your review.\n\nBest,\nCSOP\n";
 		for(RecipientInfo recipient : recipients){
 			if(recipient.getRecipientType().equalsIgnoreCase("Email")){
 				NotificationSender ns = new EmailSender();
