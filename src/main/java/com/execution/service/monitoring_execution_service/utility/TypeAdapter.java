@@ -2,6 +2,7 @@ package com.execution.service.monitoring_execution_service.utility;
 
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -101,9 +102,11 @@ public class TypeAdapter<T> {
 		else if(sqlType == Types.INTEGER || sqlType == Types.TINYINT || sqlType == Types.SMALLINT ){
 			return String.valueOf(rs.getInt(columnNumber));
 		}
-		//Long
+		//BigInt
 		else if(sqlType == Types.BIGINT){
-			return String.valueOf(rs.getLong(columnNumber));
+			BigInteger bi =  BigInteger.valueOf(rs.getLong(columnNumber));
+			return bi.toString();
+			//return String.valueOf(rs.getLong(columnNumber));
 		}
 		//Float
 		else if(sqlType == Types.REAL){
@@ -125,8 +128,8 @@ public class TypeAdapter<T> {
 		else if(sqlType == Types.NUMERIC || sqlType == Types.DECIMAL){
 			BigDecimal value= rs.getBigDecimal(columnNumber);
 			if(value != null){
-				double dValue = value.doubleValue();
-				return String.valueOf(dValue);
+				//double dValue = value.doubleValue();
+				return value.toPlainString();
 			}
 			
 		}
