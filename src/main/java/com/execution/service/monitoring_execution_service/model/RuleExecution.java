@@ -18,6 +18,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.execution.service.monitoring_execution_service.utility.DatadogSender;
 import com.execution.service.monitoring_execution_service.utility.DateTimeAdapter;
 import com.execution.service.monitoring_execution_service.utility.EmailSender;
 import com.execution.service.monitoring_execution_service.utility.NotificationSender;
@@ -350,6 +351,11 @@ public class RuleExecution implements Runnable{
 					System.out.println("Send email to target "+ recipient.getTarget()+" successed!");
 				}
 				
+			}
+			else if(recipient.getRecipientType().equalsIgnoreCase("Datadog")){
+				NotificationSender ns = new DatadogSender();
+				ns.sendNotification(recipient.getTarget(), subject, text, fileName, filePath);
+				System.out.println("send datadog metric successed!");
 			}
 			else if(recipient.getRecipientType().equalsIgnoreCase("Slack")){
 				//TODO

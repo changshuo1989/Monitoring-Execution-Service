@@ -1,0 +1,33 @@
+{
+	"$schema":"http://json-schema.org/draft-04/schema",
+	"type": "object",
+	"properties": {
+		"host": {
+			"description": "host of DDAgent",
+			"type": "string"
+		},
+		"port": {
+			"description": "port of DDAgent",
+			"type": "integer"
+		},
+		"prefix": {
+			"description": "Prefix that added before the metrics",
+			"type": "string"
+		},
+		"gauge": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"description": "name of gauge metric",
+					"type": "string"
+				},
+				"value": {
+					"description": "value of gauge metric",
+					"type": "number"
+				}
+			},
+			"required": ["name", "value"]
+		}
+	},
+	"required": ["host", "port", "prefix", "gauge"]
+}
