@@ -7,7 +7,7 @@ import java.util.Properties;
 
 public class PropertyReader {
 	private static String propertyPath="/application.properties";
-	private static String jsonPropertyPath = "/json";
+	private static String jsonPropertyPath = "json";
 	
 	public static String readProperty(String key) throws Exception{
 		Properties prop = new Properties();
