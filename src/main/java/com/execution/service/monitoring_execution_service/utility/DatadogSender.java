@@ -18,12 +18,13 @@ public class DatadogSender implements NotificationSender {
 			String host = jsonNode.get("host").asText();
 			int port = jsonNode.get("port").asInt();
 			String prefix = jsonNode.get("prefix").asText();
-			String gaugeName = jsonNode.get("name").asText();
-			double gaugeValue = jsonNode.get("value").asDouble();
+			String gaugeName = jsonNode.get("gauge").get("name").asText();
+			double gaugeValue = jsonNode.get("gauge").get("value").asDouble();
 			
 			//prepare send metric
 			StatsDClient statsd = new NonBlockingStatsDClient(prefix, host, port);
 			statsd.recordGaugeValue(gaugeName, gaugeValue);
+			statsd.close();
 		}
 		
 		return false;

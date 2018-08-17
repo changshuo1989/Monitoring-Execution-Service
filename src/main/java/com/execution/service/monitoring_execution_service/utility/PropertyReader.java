@@ -1,13 +1,11 @@
 package com.execution.service.monitoring_execution_service.utility;
 
 import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Properties;
 
-import org.mozilla.javascript.GeneratedClassLoader;
 
 public class PropertyReader {
 	private static String propertyPath="/application.properties";
@@ -27,7 +25,7 @@ public class PropertyReader {
 		
 	}
 	
-	
+	/*
 	public static void main (String[] args){
 		try {
 			System.out.println(readJsonProperty("Datadog.json"));
@@ -36,5 +34,6 @@ public class PropertyReader {
 			e.printStackTrace();
 		}
 	}
+	*/
 			
 }
