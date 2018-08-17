@@ -24,7 +24,7 @@ public class ConnectionInfo {
 			
 			if(this.connectionType.equalsIgnoreCase("mysql")){
 				jdbcInfo.setJdbcDriverClass("com.mysql.jdbc.Driver");
-				String url = "jdbc:mysql://"+this.host+":"+String.valueOf(this.port)+"/"+this.db;
+				String url = "jdbc:mysql://"+this.host+":"+String.valueOf(this.port)+"/"+this.db+"?useSSL=false";
 				jdbcInfo.setJdbcUrl(url);
 			}
 			else if(this.connectionType.equalsIgnoreCase("postgresql")){

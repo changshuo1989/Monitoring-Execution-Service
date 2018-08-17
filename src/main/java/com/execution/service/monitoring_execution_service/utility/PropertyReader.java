@@ -7,7 +7,7 @@ import java.util.Properties;
 
 public class PropertyReader {
 	private static String propertyPath="/application.properties";
-	private static String jsonPropertyPath = "src/main/resources/json";
+	private static String jsonPropertyPath = "./src/main/resources/json";
 	
 	public static String readProperty(String key) throws Exception{
 		Properties prop = new Properties();
@@ -22,6 +22,13 @@ public class PropertyReader {
 		text = new String(Files.readAllBytes(Paths.get(fullFileName)));
 		return text;
 	}
-	
+	public static void main (String[] args){
+		try {
+			System.out.println(readJsonProperty("Datadog.json"));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 			
 }
