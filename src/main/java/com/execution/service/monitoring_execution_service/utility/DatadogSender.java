@@ -12,6 +12,7 @@ public class DatadogSender implements NotificationSender {
 	public boolean sendNotification(String target, String subject, String text, String fileName, String filePath) throws Exception {
 		//validate json string
 		boolean isValid = JsonValidator.validateJsonSchema(PropertyReader.readJsonProperty("Datadog.json"), target);
+		boolean res = false;
 		if(isValid){
 			ObjectMapper mapper = new ObjectMapper();
 			JsonNode jsonNode = mapper.readTree(target);
@@ -25,9 +26,10 @@ public class DatadogSender implements NotificationSender {
 			StatsDClient statsd = new NonBlockingStatsDClient(prefix, host, port);
 			statsd.recordGaugeValue(gaugeName, gaugeValue);
 			statsd.close();
+			res=true;
 		}
 		
-		return false;
+		return res;
 	}
 
 }

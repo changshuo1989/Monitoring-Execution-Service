@@ -354,8 +354,13 @@ public class RuleExecution implements Runnable{
 			}
 			else if(recipient.getRecipientType().equalsIgnoreCase("Datadog")){
 				NotificationSender ns = new DatadogSender();
-				ns.sendNotification(recipient.getTarget(), subject, text, fileName, filePath);
-				System.out.println("send datadog metric successed!");
+				boolean res = ns.sendNotification(recipient.getTarget(), subject, text, fileName, filePath);
+				if(res){
+					System.out.println("send datadog metric successed!");
+				}
+				else{
+					System.out.println("send datadog metric failed!");
+				}
 			}
 			else if(recipient.getRecipientType().equalsIgnoreCase("Slack")){
 				//TODO
