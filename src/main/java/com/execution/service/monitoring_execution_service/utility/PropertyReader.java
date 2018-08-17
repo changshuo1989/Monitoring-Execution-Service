@@ -1,13 +1,17 @@
 package com.execution.service.monitoring_execution_service.utility;
 
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Properties;
 
+import org.mozilla.javascript.GeneratedClassLoader;
+
 public class PropertyReader {
 	private static String propertyPath="/application.properties";
-	private static String jsonPropertyPath = "./src/main/resources/json";
+	private static String jsonPropertyPath = "/json";
 	
 	public static String readProperty(String key) throws Exception{
 		Properties prop = new Properties();
@@ -17,11 +21,13 @@ public class PropertyReader {
 	}
 	
 	public static String readJsonProperty(String fileName) throws Exception{
-		String text = "";
 		String fullFileName = jsonPropertyPath+"/"+fileName;
-		text = new String(Files.readAllBytes(Paths.get(fullFileName)));
-		return text;
+		return new String(Files.readAllBytes(Paths.get(PropertyReader.class.getResource(fullFileName).toURI())));
+		
+		
 	}
+	
+	
 	public static void main (String[] args){
 		try {
 			System.out.println(readJsonProperty("Datadog.json"));
