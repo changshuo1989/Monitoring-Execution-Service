@@ -23,7 +23,8 @@ public class DatadogSender implements NotificationSender {
 			double gaugeValue = jsonNode.get("gauge").get("value").asDouble();
 			
 			//prepare send metric
-			StatsDClient statsd = new NonBlockingStatsDClient(prefix, host, port);
+			StatsDClient statsd = new NonBlockingStatsDClient(prefix, host, port, new String[] {"tag:value"} );
+			statsd.incrementCounter(gaugeName);
 			statsd.recordGaugeValue(gaugeName, gaugeValue);
 			statsd.close();
 			res=true;
