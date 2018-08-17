@@ -17,10 +17,15 @@ public class DatadogSender implements NotificationSender {
 			ObjectMapper mapper = new ObjectMapper();
 			JsonNode jsonNode = mapper.readTree(target);
 			String host = jsonNode.get("host").asText();
+			System.out.println("host: "+host);
 			int port = jsonNode.get("port").asInt();
+			System.out.println("port: "+ port);
 			String prefix = jsonNode.get("prefix").asText();
+			System.out.println("prefix:" + prefix);
 			String gaugeName = jsonNode.get("gauge").get("name").asText();
+			System.out.println("gauge name:"+ gaugeName);
 			double gaugeValue = jsonNode.get("gauge").get("value").asDouble();
+			System.out.println("gauge value:" + gaugeValue);
 			
 			//prepare send metric
 			StatsDClient statsd = new NonBlockingStatsDClient(prefix, host, port, new String[] {"tag:value"} );
