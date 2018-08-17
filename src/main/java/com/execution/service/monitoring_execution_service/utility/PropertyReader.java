@@ -6,6 +6,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Properties;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.timgroup.statsd.NonBlockingStatsDClient;
+import com.timgroup.statsd.StatsDClient;
+
 
 public class PropertyReader {
 	private static String propertyPath="/application.properties";
@@ -28,7 +33,12 @@ public class PropertyReader {
 	/*
 	public static void main (String[] args){
 		try {
-			System.out.println(readJsonProperty("Datadog.json"));
+			
+			//prepare send metric
+			StatsDClient statsd = new NonBlockingStatsDClient("my.test", "10.0.1.253", 8125);
+			statsd.recordGaugeValue("bar", 1);
+			//statsd.close();
+			//res=true;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
