@@ -20,6 +20,14 @@ public class DateTimeAdapter {
 		return dateTimeStr;
 	}
 	
+	public static String fromDateToString(Date date){
+		String dateStr = "";
+		if (date != null){
+			dateStr = dateFormat.format(date);
+		}
+		return dateStr;
+	}
+	
 	
 	public static String fromDateTimeToTitleString(Date dateTime){
 		String dateTimeStr = "";

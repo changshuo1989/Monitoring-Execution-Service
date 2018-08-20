@@ -121,7 +121,7 @@ public class TypeAdapter<T> {
 			Date date=rs.getDate(columnNumber);
 			if(date!=null){
 				java.util.Date value=new java.util.Date(date.getTime());
-				return DateTimeAdapter.fromDateTimeToString(value);
+				return DateTimeAdapter.fromDateToString(value);
 			}
 		}
 		//BigDecimal

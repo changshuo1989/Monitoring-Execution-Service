@@ -8,8 +8,9 @@ import com.timgroup.statsd.StatsDClient;
 
 public class DatadogSender implements NotificationSender {
 
+	
 	@Override
-	public boolean sendNotification(String target, String subject, String text, String fileName, String filePath) throws Exception {
+	public  boolean sendNotification(String target, String subject, String text, String fileName, String filePath) throws Exception {
 		//validate json string
 		boolean isValid = JsonValidator.validateJsonSchema(PropertyReader.readJsonProperty("Datadog.json"), target);
 		boolean res = false;
@@ -21,7 +22,7 @@ public class DatadogSender implements NotificationSender {
 			int port = jsonNode.get("port").asInt();
 			System.out.println("port: "+ port);
 			String prefix = jsonNode.get("prefix").asText();
-			System.out.println("prefix:" + prefix);
+			System.out.println("prefix: " + prefix);
 			String gaugeName = jsonNode.get("gauge").get("name").asText();
 			System.out.println("gauge name:"+ gaugeName);
 			double gaugeValue = jsonNode.get("gauge").get("value").asDouble();
@@ -31,11 +32,23 @@ public class DatadogSender implements NotificationSender {
 			StatsDClient statsd = new NonBlockingStatsDClient(prefix, host, port, new String[] {"tag:value"} );
 			statsd.incrementCounter(gaugeName);
 			statsd.recordGaugeValue(gaugeName, gaugeValue);
-			statsd.close();
+			//statsd.close();
 			res=true;
 		}
 		
 		return res;
 	}
+	/*
+	public static void main(String[] args){
+		DatadogSender ds = new DatadogSender();
+		try {
+			boolean a = ds.sendNotification("{\"host\": \"10.0.1.253\", \"port\": 8125, \"prefix\": \"my.test\", \"gauge\": {\"name\": \"bar\", \"value\": 100}}", "", "", "", "");
+			System.out.println(a);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	*/
 
 }
