@@ -12,6 +12,8 @@ public class CheckInfo {
 	private String checkLogicType;
 	private String checkOperatorType;
 
+	
+	
 	public int getId() {
 		return id;
 	}

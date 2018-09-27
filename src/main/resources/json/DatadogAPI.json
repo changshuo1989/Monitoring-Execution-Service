@@ -1,0 +1,32 @@
+{
+	"$schema":"http://json-schema.org/draft-04/schema",
+	"type": "object",
+	"properties": {
+		"gauge": {
+			"type": "object",
+			"properties": {
+				"name": {
+					"description": "name of gauge metric",
+					"type": "string"
+				},
+				"value": {
+					"description": "value of gauge metric",
+					"type": "number"
+				}
+			},
+			"required": ["name", "value"]
+		},
+		"host": {
+			"description": "host of DDAgent",
+			"type": "string"
+		},
+		"tags": {
+			"description": "A list of tags associated with the metric.",
+			"type": "array",
+			"items": {
+        		"type": "string"
+      		}
+		}
+	},
+	"required": ["gauge"]
+}
